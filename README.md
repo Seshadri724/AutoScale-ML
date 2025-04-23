@@ -78,6 +78,7 @@ Create superuser: python manage.py createsuperuser
 
 ## 📊 Observability
 
-### Endpoint	Description
-/health -	Returns model/server status
-/metrics -	Shows latency, request rate, etc.
+| Endpoint  |	Description                        |
+|------------|--------------------|
+| /health  |	Returns model/server status       |
+| /metrics  |	Shows latency, request rate, etc.  |
