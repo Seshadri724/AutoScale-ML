@@ -52,10 +52,8 @@ cd AutoScaleML
 
 ### 2. Configure Environment
 Create a .env file or update settings.py with:
-
-MySQL credentials
-
-Model path
+- MySQL credentials
+- Model path
 
 ### 3. Build & Run (Docker)
 ```bash
