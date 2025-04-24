@@ -25,7 +25,7 @@ def predict_view(request):
     # measure latency
     start = time.time()
     prediction = predict(input_data)
-    latency = round(time.time() * 1000, 2)
+    latency = round((time.time() - start) * 1000, 2)
 
     return Response({
         "prediction" : prediction,
