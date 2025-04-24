@@ -3,6 +3,10 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import predict
 import time
+from django.http import HttpResponse
+
+def home(request):
+    return render(request, 'home.html')
 
 """
 Endpoint: /predict
