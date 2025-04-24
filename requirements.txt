@@ -1,0 +1,12 @@
+asgiref==3.8.1
+Django==5.2
+djangorestframework==3.16.0
+joblib==1.4.2
+numpy==2.2.5
+scikit-learn==1.6.1
+scipy==1.15.2
+sqlparse==0.5.3
+style==1.1.0
+threadpoolctl==3.6.0
+tzdata==2025.2
+update==0.0.1
