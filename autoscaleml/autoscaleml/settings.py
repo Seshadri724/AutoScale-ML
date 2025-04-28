@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -77,16 +77,15 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'autoscaleml',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': 'localhost',
+        'USER': 'user',
+        'PASSWORD': 'password',
+        'HOST': 'db',  # This should match your MySQL service name in docker-compose
         'PORT': '3306',
         'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         }
     }
 }
-
 
 
 # Password validation

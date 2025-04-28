@@ -1,10 +1,10 @@
 asgiref==3.8.1
-Django==5.2
+Django==4.2
 djangorestframework==3.16.0
 joblib==1.4.2
-numpy==2.2.5
+numpy==1.26.4
 scikit-learn==1.6.1
-scipy==1.15.2
+scipy
 sqlparse==0.5.3
 style==1.1.0
 threadpoolctl==3.6.0
