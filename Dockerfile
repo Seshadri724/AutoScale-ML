@@ -13,6 +13,7 @@ RUN pip install mysqlclient
 
 COPY . .
 
+
 WORKDIR /app/autoscaleml
 
 # Set up entrypoint
