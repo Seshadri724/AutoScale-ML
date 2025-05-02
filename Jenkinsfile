@@ -26,7 +26,7 @@ pipeline {
 
         stage('Stop Containers') {
             steps {
-                bat 'docker-compose -f ${DOCKER_COMPOSE_FILE} down'
+                bat "docker-compose -f ${DOCKER_COMPOSE_FILE} down"
             }
         }
     }
