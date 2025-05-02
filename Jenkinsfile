@@ -4,15 +4,20 @@ pipeline {
     stages {
         stage('Install Dependencies') {
             steps {
-                bat 'python -m venv venv'
-                bat '. venv/bin/activate && pip install -r requirements.txt'
+                bat """
+                python -m venv venv
+                venv\\Scripts\\activate
+                pip install -r requirements.txt
+                """
             }
         }
 
         stage('Build') {
             steps {
-                bat '. venv/bin/activate && python autoscale/manage.py makemigrations'
-                bat '. venv/bin/activate && python autoscale/manage.py migrate'
+                bat """
+                call venv\\Scripts\\activate
+                python autoscale/manage.py makem
+                """
             }
         }
     }
