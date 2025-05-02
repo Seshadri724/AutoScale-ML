@@ -2,6 +2,7 @@ asgiref==3.8.1
 Django==4.2
 djangorestframework==3.16.0
 joblib==1.4.2
+mysqlclient
 numpy
 scikit-learn==1.6.1
 scipy
