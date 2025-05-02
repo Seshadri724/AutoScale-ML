@@ -14,11 +14,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                bat """
-                call venv\\Scripts\\activate
-                python autoscale\\manage.py makemigrations
-                python autoscale\\manage.py migrate
-                """
+                bat 'call venv\\Scripts\\activate & python autoscale\\manage.py makemigrations & python autoscale\\manage.py migrate'
             }
         }
     }
