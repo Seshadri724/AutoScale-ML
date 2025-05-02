@@ -16,7 +16,8 @@ pipeline {
             steps {
                 bat """
                 call venv\\Scripts\\activate
-                python autoscale/manage.py makem
+                python autoscale\\manage.py makemigrations
+                python autoscale\\manage.py migrate
                 """
             }
         }
