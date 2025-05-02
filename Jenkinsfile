@@ -6,11 +6,11 @@ pipeline {
     }
     
     stages {
-        stage('Install Dependencies') {
-            steps {
-                bat 'python -m venv venv & call venv\\Scripts\\activate & pip install -r requirements.txt'
-            }
-        }
+        // stage('Install Dependencies') {
+        //     steps {
+        //         bat 'python -m venv venv & call venv\\Scripts\\activate & pip install -r requirements.txt'
+        //     }
+        // }
 
         stage('Build Containers') {
             steps {
@@ -18,11 +18,11 @@ pipeline {
             }
         }
 
-        stage('Migrate Databases') {
-            steps {
-                bat 'cd autoscaleml & call ..\\venv\\Scripts\\activate & python manage.py makemigrations & python manage.py migrate'
-            }
-        }
+        // stage('Migrate Databases') {
+        //     steps {
+        //         bat 'cd autoscaleml & call ..\\venv\\Scripts\\activate & python manage.py makemigrations & python manage.py migrate'
+        //     }
+        // }
 
         stage('Stop Containers') {
             steps {
