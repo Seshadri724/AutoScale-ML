@@ -13,7 +13,7 @@ pipeline {
         }
 
         stage('Build Containers') {
-            bat 'docker-compose -f ${DOCKER_COMPOSE_FILE} up -d --build'
+            bat "docker-compose -f ${DOCKER_COMPOSE_FILE} up -d --build"
         }
 
         stage('Migrate Databases') {
