@@ -2,12 +2,6 @@ pipeline {
     agent any
     
     stages {
-        stage('Clone Repo') {
-            steps {
-                git branch: 'main', url: 'https://github.com/yourusername/your-repo.git'
-            }
-        }
-
         stage('Install Dependencies') {
             steps {
                 sh 'python -m venv venv'
