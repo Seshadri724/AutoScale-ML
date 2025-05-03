@@ -3,6 +3,8 @@ pipeline {
 
     environment {
         DOCKER_COMPOSE_FILE = 'docker-compose.yaml'
+        IMAGE_NAME = 'amanprakash23/autoscaleml'
+        IMAGE_TAG = 'latest'
     }
     
     stages {
@@ -33,12 +35,7 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'DockerHub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    script {
-                        def imageName = "amanprakash23/autoscaleml"
-                        def imageTag = "latest"
-
-                        bat ' docker login -u %DOCKER_USER% -p %DOCKER_PASS% && docker tag autoscale-ml %IMAGE_NAME%:%IMAGE_TAG% && docker push %IMAGE_NAME%:%IMAGE_TAG% && docker logout' 
-                    }
+                    bat ' docker login -u %DOCKER_USER% -p %DOCKER_PASS% && docker tag autoscale-ml %IMAGE_NAME%:%IMAGE_TAG% && docker push %IMAGE_NAME%:%IMAGE_TAG% && docker logout' 
                 }
             }
         }
