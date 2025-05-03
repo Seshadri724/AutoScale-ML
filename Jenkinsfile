@@ -29,5 +29,23 @@ pipeline {
                 bat "docker-compose -f ${DOCKER_COMPOSE_FILE} down"
             }
         }
+
+        stage('Push to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'DockerHub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    script {
+                        def imageName = "amanprakash23/autoscaleml"
+                        def imageTag = "latest"
+
+                        sh """
+                            docker login -u $DOCKER_USER -p $DOCKER_PASS
+                            docker tag autoscale-ml ${imageName}:${imageTag}
+                            docker push ${imageName}:${imageTag}
+                        """
+                    }
+                }
+            }
+        }
     }
 }
+
