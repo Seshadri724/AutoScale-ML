@@ -37,11 +37,7 @@ pipeline {
                         def imageName = "amanprakash23/autoscaleml"
                         def imageTag = "latest"
 
-                        sh """
-                            docker login -u $DOCKER_USER -p $DOCKER_PASS
-                            docker tag autoscale-ml ${imageName}:${imageTag}
-                            docker push ${imageName}:${imageTag}
-                        """
+                        bat ' docker login -u %DOCKER_USER% -p %DOCKER_PASS% && docker tag autoscale-ml %IMAGE_NAME%:%IMAGE_TAG% && docker push %IMAGE_NAME%:%IMAGE_TAG% && docker logout' 
                     }
                 }
             }
