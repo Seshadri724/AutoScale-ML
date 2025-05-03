@@ -1,38 +1,32 @@
 pipeline {
     agent any
+
+    environment {
+        DOCKER_COMPOSE_FILE = 'docker-compose.yaml'
+    }
+    
     stages {
-        stage('Build') {
+        // stage('Install Dependencies') {
+        //     steps {
+        //         bat 'python -m venv venv & call venv\\Scripts\\activate & pip install -r requirements.txt'
+        //     }
+        // }
+
+        stage('Build Containers') {
             steps {
-                echo 'Building the application...'
-                sh 'python manage.py makemigrations'
-                sh 'python manage.py migrate'
+                bat "docker-compose -f ${DOCKER_COMPOSE_FILE} up -d --build"
             }
         }
-        stage('Test') {
+
+        // stage('Migrate Databases') {
+        //     steps {
+        //         bat 'cd autoscaleml & call ..\\venv\\Scripts\\activate & python manage.py makemigrations & python manage.py migrate'
+        //     }
+        // }
+
+        stage('Stop Containers') {
             steps {
-                echo 'Running tests...'
-                sh 'python manage.py test'                pipeline {
-                    agent {
-                        docker {
-                            image 'python:3.9' // Use a Python Docker image
-                        }
-                    }
-                    stages {
-                        stage('Build') {
-                            steps {
-                                echo 'Building the application...'
-                                sh 'python manage.py makemigrations'
-                                sh 'python manage.py migrate'
-                            }
-                        }
-                        stage('Test') {
-                            steps {
-                                echo 'Running tests...'
-                                sh 'python manage.py test'
-                            }
-                        }
-                    }
-                }
+                bat "docker-compose -f ${DOCKER_COMPOSE_FILE} down"
             }
         }
     }
