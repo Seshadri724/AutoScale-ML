@@ -35,7 +35,7 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'DockerHub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    bat ' docker login -u %DOCKER_USER% -p %DOCKER_PASS% && docker tag autoscale-ml %IMAGE_NAME%:%IMAGE_TAG% && docker push %IMAGE_NAME%:%IMAGE_TAG% && docker logout' 
+                    bat ' docker login -u %DOCKER_USER% -p %DOCKER_PASS% && docker tag autoscaleml %IMAGE_NAME%:%IMAGE_TAG% && docker push %IMAGE_NAME%:%IMAGE_TAG% && docker logout' 
                 }
             }
         }
