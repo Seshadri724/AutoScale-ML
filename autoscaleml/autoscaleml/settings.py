@@ -79,7 +79,7 @@ DATABASES = {
         'NAME': 'autoscaleml',
         'USER': 'user',
         'PASSWORD': 'password',
-        'HOST': 'db',  # This should match your MySQL service name in docker-compose
+        'HOST': 'mysql',  # This should match your MySQL service name in docker-compose
         'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
