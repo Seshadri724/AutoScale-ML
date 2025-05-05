@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: root
+        - name: MYSQL_DATABASE
+          value: autoscale_db
+        ports:
+        - containerPort: 3306
+        args: ["--port=3306"]  # ✅ Ensure MySQL binds to port 3306
+        readinessProbe:
+          exec:
+            command:
+              - mysqladmin
+              - ping
+              - -h
+              - 127.0.0.1       # ✅ Avoid socket issues by using IP instead of localhost
+              - -u
+              - root
+              - -proot
+          initialDelaySeconds: 20  # ✅ Allow MySQL enough time to initialize
+          timeoutSeconds: 5
+          periodSeconds: 5
+          failureThreshold: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  selector:
+    app: mysql
+  ports:
+  - port: 3306
+    targetPort: 3306
