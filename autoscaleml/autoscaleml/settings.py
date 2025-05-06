@@ -76,11 +76,11 @@ WSGI_APPLICATION = 'autoscaleml.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'autoscaleml',
-        'USER': 'user',
-        'PASSWORD': 'password',
-        'HOST': 'mysql',  # This should match your MySQL service name in docker-compose
-        'PORT': '3306',
+        'NAME': os.environ.get("MYSQL_DATABASE", "autoscaleml"),
+        'USER': os.environ.get("MYSQL_USER", "user"),
+        'PASSWORD': os.environ.get("MYSQL_PASSWORD", "password"),
+        'HOST': os.environ.get("MYSQL_HOST", "db"),  # or "mysql" in K8s
+        'PORT': os.environ.get("MYSQL_PORT", "3306"),
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         }

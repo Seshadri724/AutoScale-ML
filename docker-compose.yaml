@@ -30,10 +30,11 @@ services:
       db:
         condition: service_healthy
     environment:
-      DB_HOST: db
-      DB_NAME: autoscaleml
-      DB_USER: user
-      DB_PASSWORD: root
+      MYSQL_DATABASE: autoscaleml
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
 
 volumes:
   db_data:
