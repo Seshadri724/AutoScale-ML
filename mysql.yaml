@@ -19,7 +19,11 @@ spec:
         - name: MYSQL_ROOT_PASSWORD
           value: root
         - name: MYSQL_DATABASE
-          value: autoscale_db
+          value: autoscaleml
+        - name: MYSQL_USER
+          value: user
+        - name: MYSQL_PASSWORD
+          value: password
         ports:
         - containerPort: 3306
         args: ["--port=3306"]  # ✅ Ensure MySQL binds to port 3306

@@ -12,31 +12,22 @@ spec:
       labels:
         app: django
     spec:
-      initContainers:
-        - name: wait-for-mysql-db
-          image: mysql:8.0
-          command:
-            - sh
-            - -c
-            - |
-              until mysql -h mysql -u root -proot -e "SELECT 1"; do
-                echo "Waiting for MySQL to be available..."
-                sleep 5
-              done
       containers:
       - name: django
         image: amanprakash23/autoscaleml:latest
         ports:
         - containerPort: 8000
         env:
-        - name: DB_HOST
+        - name: MYSQL_DATABASE
+          value: "autoscaleml"
+        - name: MYSQL_USER
+          value: "user"
+        - name: MYSQL_PASSWORD
+          value: "password"
+        - name: MYSQL_HOST
           value: "mysql"
-        - name: DB_NAME
-          value: "autoscale_db"
-        - name: DB_USER
-          value: "root"
-        - name: DB_PASSWORD
-          value: "root"
+        - name: MYSQL_PORT
+          value: "3306"
       imagePullSecrets:
       - name: regcred
 ---
