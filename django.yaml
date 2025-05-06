@@ -12,17 +12,6 @@ spec:
       labels:
         app: django
     spec:
-      initContainers:
-        - name: wait-for-mysql-db
-          image: mysql:8.0
-          command:
-            - sh
-            - -c
-            - |
-              until mysql -h mysql -u root -proot -e "SELECT 1"; do
-                echo "Waiting for MySQL to be available..."
-                sleep 5
-              done
       containers:
       - name: django
         image: amanprakash23/autoscaleml:latest
