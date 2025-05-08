@@ -22,4 +22,4 @@ class PredictionLog(models.Model):
 
 def predict(input_features):
     # Take a list of input features and return the model's predictions
-    return model.predict([input_features])[0]
+    return (model.predict([input_features])[0],200)
