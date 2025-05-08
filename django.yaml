@@ -17,6 +17,13 @@ spec:
         image: amanprakash23/autoscaleml:latest
         ports:
         - containerPort: 8000
+        resources:
+          requests:
+            memory: "500Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "2"
         env:
         - name: MYSQL_DATABASE
           value: "autoscaleml"
