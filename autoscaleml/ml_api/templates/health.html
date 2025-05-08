@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>🩺 AutoScale-ML Health Check</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(145deg, #0d1a26, #0b1117);
+            color: #f1f1f1;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            transition: background 0.3s ease;
+        }
+
+        h1 {
+            margin-top: 40px;
+            font-size: 2.8rem;
+            color: #64c6fa;
+            letter-spacing: 1.5px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .health-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px 40px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 450px;
+            margin: 30px auto;
+            text-align: center;
+            animation: fadeIn 1s ease-out 0.2s forwards;
+            opacity: 0;
+        }
+
+        .status {
+            font-size: 1.4rem;
+            margin: 25px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: background 0.3s ease, transform 0.2s ease-in-out;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .badge:hover {
+            transform: scale(1.05);
+        }
+
+        .healthy {
+            background-color: #28a745;
+            color: #fff;
+            animation: pulseHealthy 1.5s infinite alternate;
+        }
+
+        .unhealthy {
+            background-color: #dc3545;
+            color: #fff;
+            animation: shakeUnhealthy 0.8s infinite;
+        }
+
+        .loading {
+            font-size: 1.3rem;
+            color: #ffc107;
+            margin-bottom: 25px;
+            animation: spin 1s linear infinite;
+        }
+
+        footer {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-top: 40px;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 0.8s ease-out 0.5s backwards;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulseHealthy {
+            0% {
+                transform: scale(1);
+            }
+            100% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes shakeUnhealthy {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            10%, 30%, 50%, 70%, 90% {
+                transform: translateX(-5px);
+            }
+            20%, 40%, 60%, 80% {
+                transform: translateX(5px);
+            }
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🩺 AutoScale-ML Health Check</h1>
+    <div class="health-container">
+        <div class="loading" id="loading">⚙️ Checking system health...</div>
+        <div class="status">API Status: <span class="badge" id="api-status">...</span></div>
+        <div class="status">Database: <span class="badge" id="db-status">...</span></div>
+        <div class="status">ML Model: <span class="badge" id="ml-status">...</span></div>
+    </div>
+
+    <footer>🔄 Updated every 5s | 🛡️ AutoScale-ML Platform</footer>
+
+    <script>
+        const loading = document.getElementById('loading');
+        const apiStatus = document.getElementById('api-status');
+        const dbStatus = document.getElementById('db-status');
+        const mlStatus = document.getElementById('ml-status');
+        const healthContainer = document.querySelector('.health-container');
+
+        function setStatus(el, isHealthy) {
+            el.textContent = isHealthy ? 'Healthy' : 'Unhealthy';
+            el.className = `badge ${isHealthy ? 'healthy' : 'unhealthy'}`;
+        }
+
+        async function updateHealth() {
+            try {
+                const res = await fetch('/health/json/');
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                const data = await res.json();
+
+                loading.style.display = 'none';
+
+                setStatus(apiStatus, data.status === 'ok');
+                setStatus(dbStatus, data.database === 'connected');
+                setStatus(mlStatus, data.model === 'ready');
+
+                if (data.status !== 'ok' || data.database !== 'connected' || data.model !== 'ready') {
+                    healthContainer.classList.add('is-unhealthy');
+                } else {
+                    healthContainer.classList.remove('is-unhealthy');
+                }
+            } catch (error) {
+                console.error('Error fetching health data:', error);
+                loading.textContent = '❌ Failed to fetch health status.';
+                setStatus(apiStatus, false);
+                setStatus(dbStatus, false);
+                setStatus(mlStatus, false);
+                healthContainer.classList.add('is-unhealthy');
+            }
+        }
+
+        updateHealth();
+        setInterval(updateHealth, 5000);
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>🚀 AutoScale-ML Metrics</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(circle at top, #1e2a38, #121212);
+            color: #f0f0f0;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: flex-start;
+            min-height: 100vh;
+        }
+
+        h1 {
+            font-size: 2.8rem; color: #00d1ff;
+            margin: 30px 0 20px;
+        }
+
+        .dashboard {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            width: 95%;
+            max-width: 1000px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .metric {
+            font-size: 1.6rem;
+            margin: 20px 0;
+        }
+
+        .metric span {
+            color: #00ffb2;
+            font-weight: bold;
+            font-size: 1.8rem;
+        }
+
+        canvas {
+            background: #1f1f1f;
+            border-radius: 10px;
+            margin: 20px 0;
+            max-width: 100%;
+        }
+
+        .loading {
+            font-size: 1.2rem;
+            color: #ff6b6b;
+            margin-bottom: 10px;
+        }
+
+        .error {
+            color: #ff4d4d;
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 AutoScale-ML Metrics</h1>
+    <div class="dashboard">
+        <div class="loading" id="loading">⏳ Loading live metrics...</div>
+        <div class="metric">🔁 Total Requests: <span id="requests-count">0</span></div>
+        <div class="metric">⚡ Avg. Latency: <span id="average-latency">0 ms</span></div>
+        <div class="metric">📦 Active Pods: <span id="active-pods">0</span></div>
+        <div class="error" id="error-message" style="display: none;"></div>
+    </div>
+
+    <canvas id="rpsChart" height="100"></canvas>
+    <canvas id="latencyChart" height="100"></canvas>
+    <canvas id="resourceChart" height="100"></canvas>
+    <canvas id="errorRateChart" height="100"></canvas>
+
+    <footer>🔄 Updated every 5s | ⚙️ Powered by Django + Docker</footer>
+
+    <script>
+        const loadingEl = document.getElementById('loading');
+        const requestsCountEl = document.getElementById('requests-count');
+        const latencyEl = document.getElementById('average-latency');
+        const podsEl = document.getElementById('active-pods');
+        const errorMessageEl = document.getElementById('error-message');
+
+        let rpsChart, latencyChart, resourceChart, errorRateChart;
+
+        async function fetchMetrics() {
+            try {
+                const response = await fetch('/metrics/json/');
+                if (!response.ok) throw new Error(`Error ${response.status}`);
+                return await response.json();
+            } catch (error) {
+                console.error("Metrics fetch failed", error);
+                return null;
+            }
+        }
+
+        function animateValue(el, target) {
+            let current = parseFloat(el.textContent.replace(/[^\d.]/g, '')) || 0;
+            let step = (target - current)*10;
+            let count = 0;
+            const interval = setInterval(() => {
+                current += step;
+                count++;
+                el.textContent = count < 15 ? Math.round(current * 100) / 100 : target;
+                if (el === latencyEl && !el.textContent.endsWith(' ms')) el.textContent += ' ms';
+                if (count >= 15) clearInterval(interval);
+            }, 50);
+        }
+
+        function initCharts() {
+            const now = () => new Date().toLocaleTimeString();
+
+            rpsChart = new Chart(document.getElementById('rpsChart'), {
+                type: 'line',
+                data: {
+                    labels: [], datasets: [{
+                        label: 'Requests per Second',
+                        data: [], borderColor: '#00ffff', fill: false
+                    }]
+                }
+            });
+
+            latencyChart = new Chart(document.getElementById('latencyChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['P50', 'P90', 'P99'],
+                    datasets: [{
+                        label: 'Latency (ms)',
+                        data: [0, 0, 0],
+                        backgroundColor: ['#00d1ff', '#00b2ff', '#0096ff']
+                    }]
+                }
+            });
+
+            resourceChart = new Chart(document.getElementById('resourceChart'), {
+                type: 'line',
+                data: {
+                    labels: [], datasets: [
+                        { label: 'CPU (%)', data: [], borderColor: '#ff9f40', fill: false },
+                        { label: 'Memory (MB)', data: [], borderColor: '#36a2eb', fill: false }
+                    ]
+                }
+            });
+
+            errorRateChart = new Chart(document.getElementById('errorRateChart'), {
+                type: 'line',
+                data: {
+                    labels: [], datasets: [{
+                        label: 'Error Rate (%)',
+                        data: [], borderColor: 'red', fill: false
+                    }]
+                }
+            });
+        }
+
+        function updateCharts(metrics) {
+            const now = new Date().toLocaleTimeString();
+
+            // RPS
+            rpsChart.data.labels.push(now);
+            rpsChart.data.datasets[0].data.push(metrics.rps || 0);
+            if (rpsChart.data.labels.length > 20) {
+                rpsChart.data.labels.shift();
+                rpsChart.data.datasets[0].data.shift();
+            }
+            rpsChart.update();
+
+            // Latency percentiles
+            latencyChart.data.datasets[0].data = [
+                metrics.latency_p50 || 0,
+                metrics.latency_p90 || 0,
+                metrics.latency_p99 || 0
+            ];
+            latencyChart.update();
+
+            // CPU & Memory
+            resourceChart.data.labels.push(now);
+            resourceChart.data.datasets[0].data.push(metrics.cpu || 0);
+            resourceChart.data.datasets[1].data.push(metrics.memory || 0);
+            if (resourceChart.data.labels.length > 20) {
+                resourceChart.data.labels.shift();
+                resourceChart.data.datasets[0].data.shift();
+                resourceChart.data.datasets[1].data.shift();
+            }
+            resourceChart.update();
+
+            // Error Rate
+            errorRateChart.data.labels.push(now);
+            errorRateChart.data.datasets[0].data.push(metrics.error_rate || 0);
+            if (errorRateChart.data.labels.length > 20) {
+                errorRateChart.data.labels.shift();
+                errorRateChart.data.datasets[0].data.shift();
+            }
+            errorRateChart.update();
+        }
+
+        async function updateMetrics() {
+            loadingEl.style.display = 'block';
+            errorMessageEl.style.display = 'none';
+            const data = await fetchMetrics();
+            if (data) {
+                loadingEl.style.display = 'none';
+                animateValue(requestsCountEl, data.requests_count || 0);
+                animateValue(latencyEl, data.average_latency_ms || 0);
+                animateValue(podsEl, data.active_pods || 0);
+                updateCharts(data);
+            } else {
+                loadingEl.style.display = 'none';
+                errorMessageEl.textContent = "❌ Failed to load metrics.";
+                errorMessageEl.style.display = 'block';
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            initCharts();
+            updateMetrics();
+            setInterval(updateMetrics, 5000);
+        });
+    </script>
+</body>
+</html>

@@ -1,16 +1,255 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>AutoScale-ML</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoScale-ML | AI-Powered Scalable Backend</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial; padding: 2rem; background: #f5f5f5; text-align: center; }
-        h1 { color: #333; }
-        p { color: #666; }
+        :root {
+            --primary: #6c63ff;
+            --secondary: #1d1d1f;
+            --accent: #302e2f;
+            --dark: #2d3748;
+            --light: #f7fafc;
+            --gradient-start: #6c63ff;
+            --gradient-end: #4d44db;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: #000;
+            color: var(--light);
+            text-align: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            position: relative;
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #fff 20%, #ff6584 40%, #ff6584 60%, #fff 80%);
+            background-size: 200% auto;
+            color: #000;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 3s linear infinite;
+        }
+
+        @keyframes shine {
+            to {
+                background-position: 200% center;
+            }
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .description {
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            opacity: 0.85;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        a.button {
+            display: inline-flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            -webkit-backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        a.button:hover {
+            background: rgb(255, 194, 26);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        a.button:active {
+            transform: translateY(1px);
+        }
+
+        a.button.primary {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        a.button.primary:hover {
+            background: #60ccf7;
+        }
+
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            width: 280px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .feature-desc {
+            font-size: 0.95rem;
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+
+        .admin-link {
+            margin-top: 3rem;
+            display: inline-block;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .admin-link:hover {
+            color: white;
+            border-bottom-color: white;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .tagline {
+                font-size: 1.2rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>🚀 Welcome to AutoScale-ML</h1>
-    <p>This is your scalable ML model API backend.</p>
-    <p>Check logs at <a href="/admin">/admin</a></p>
+    <div class="container">
+        <div class="content">
+            <h1>AutoScale-ML</h1>
+            <div class="tagline">AI-Powered Scalable Machine Learning Backend</div>
+            <p class="description">
+                Deploy, manage, and scale your machine learning models effortlessly with our high-performance API backend.
+                Built for developers who demand reliability at scale.
+            </p>
+
+            <div class="button-group">
+                <a href="/metrics" class="button primary">
+                    <span class="icon">📊</span>
+                    View Metrics
+                </a>
+                <a href="/health" class="button">
+                    <span class="icon">💓</span>
+                    System Health
+                </a>
+              
+            </div>
+
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-title">Lightning Fast</div>
+                    <div class="feature-desc">
+                        Optimized for high throughput with sub-millisecond response times, even under heavy load.
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <div class="feature-title">Auto-Scaling</div>
+                    <div class="feature-desc">
+                        Automatically scales to handle traffic spikes without manual intervention.
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <div class="feature-title">Secure</div>
+                    <div class="feature-desc">
+                        Enterprise-grade security with JWT authentication and encrypted communications.
+                    </div>
+                </div>
+            </div>
+
+            <a href="/admin" class="admin-link">Access Admin Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('AutoScale-ML ready to rock! 🚀');
+        });
+    </script>
 </body>
 </html>
