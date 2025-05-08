@@ -105,11 +105,11 @@ def metrics_json(request):
     avg_latency = PredictionLog.objects.aggregate(avg=Avg('latency_ms'))['avg'] or 0
 
     now = timezone.now()
-    one_minute_ago = now - datetime.timedelta(seconds=600)
+    one_minute_ago = now - datetime.timedelta(seconds=5)
     recent_logs = PredictionLog.objects.filter(timestamp__gte=one_minute_ago)
 
     # Requests per second over the last minute
-    rps = round(recent_logs.count() / 60, 2)
+    rps = round(recent_logs.count() / 5, 2)
 
     # Latency percentiles (using manual logic; PostgreSQL users can use percentile_cont)
     recent_latencies = list(recent_logs.values_list('latency_ms', flat=True))
@@ -132,7 +132,6 @@ def metrics_json(request):
     return Response({
         "requests_count": total_requests,
         "average_latency_ms": round(avg_latency, 2),
-        "active_pods": 1,  # Replace with actual autoscaler logic if available
         "rps": rps,
         "latency_p50": latency_p50,
         "latency_p90": latency_p90,
@@ -150,5 +149,5 @@ def metrics_dashboard(request):
     return render(request, "metrics.html", {
         "requests_count": total_requests,
         "average_latency": round(avg_latency, 2),
-        "active_pods": 1
+        
     })
